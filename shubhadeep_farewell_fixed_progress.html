@@ -1,0 +1,217 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .scene { padding: 2rem 1rem; display: flex; justify-content: center; background: #111; min-height: 100vh; }
+  .card { max-width: 460px; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6); font-family: Arial, sans-serif; }
+  .color-strip { height: 6px; display: flex; }
+  .cs{flex:1} .cs1{background:#D4537E} .cs2{background:#EF9F27} .cs3{background:#1D9E75} .cs4{background:#7F77DD} .cs5{background:#378ADD}
+
+  .header { background: #e8e6f8; padding: 2rem 2rem 1.75rem; text-align: center; }
+  .dots { display: flex; justify-content: center; gap: 10px; margin-bottom: 1.5rem; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .d1{background:#D4537E} .d2{background:#EF9F27} .d3{background:#1D9E75} .d4{background:#7F77DD} .d5{background:#378ADD}
+
+  .avatar-ring { width:110px; height:110px; border-radius:50%; border:3px solid #7F77DD; outline:5px solid #e8e6f8; margin:0 auto 1.1rem; overflow:hidden; position:relative; background:#87ceeb; }
+  .av-sky{position:absolute;inset:0;background:#87ceeb}
+  .av-ground{position:absolute;bottom:0;left:0;right:0;height:38%;background:#c97a5a}
+  .av-grass{position:absolute;bottom:36%;left:0;right:0;height:14%;background:#4a9a4a;border-radius:50% 50% 0 0/80% 80% 0 0}
+  .av-torso{position:absolute;bottom:14%;left:50%;transform:translateX(-50%);width:58px;height:46px;background:#8B2035;border-radius:8px 8px 2px 2px}
+  .av-col-l{position:absolute;top:0;left:9px;width:0;height:0;border-left:9px solid transparent;border-right:7px solid transparent;border-top:16px solid #5a1525}
+  .av-col-r{position:absolute;top:0;right:9px;width:0;height:0;border-left:7px solid transparent;border-right:9px solid transparent;border-top:16px solid #5a1525}
+  .av-neck{position:absolute;bottom:56%;left:50%;transform:translateX(-50%);width:16px;height:12px;background:#c8956c;border-radius:2px}
+  .av-head{position:absolute;bottom:58%;left:50%;transform:translateX(-50%);width:46px;height:50px;background:#c8956c;border-radius:50% 50% 44% 44%/54% 54% 46% 46%}
+  .av-ear-l{position:absolute;bottom:65%;left:calc(50% - 26px);width:9px;height:13px;background:#c8956c;border-radius:50%}
+  .av-ear-r{position:absolute;bottom:65%;left:calc(50% + 17px);width:9px;height:13px;background:#c8956c;border-radius:50%}
+  .av-hair{position:absolute;bottom:82%;left:50%;transform:translateX(-50%);width:48px;height:22px;background:#1a1008;border-radius:50% 50% 15% 15%/65% 65% 15% 15%}
+  .av-eye-l{position:absolute;bottom:71%;left:calc(50% - 13px);width:9px;height:7px;background:#1a1008;border-radius:50%}
+  .av-eye-r{position:absolute;bottom:71%;left:calc(50% + 4px);width:9px;height:7px;background:#1a1008;border-radius:50%}
+  .av-nose{position:absolute;bottom:65%;left:50%;transform:translateX(-50%);width:6px;height:5px;background:#b07850;border-radius:50%;opacity:.7}
+  .av-smile{position:absolute;bottom:59%;left:50%;transform:translateX(-50%);width:14px;height:6px;border-bottom:2px solid #7a4828;border-radius:0 0 50% 50%}
+  .av-gl{position:absolute;bottom:69%;left:50%;transform:translateX(-50%);width:38px;height:12px}
+  .av-gl-l{position:absolute;left:0;top:0;width:16px;height:12px;border:1.5px solid #b0a080;border-radius:3px;background:rgba(200,220,240,.12)}
+  .av-gl-r{position:absolute;right:0;top:0;width:16px;height:12px;border:1.5px solid #b0a080;border-radius:3px;background:rgba(200,220,240,.12)}
+  .av-gl-b{position:absolute;left:16px;top:5px;width:6px;height:1.5px;background:#b0a080}
+
+  .name-title{font-size:22px;font-weight:600;color:#26215C;margin-bottom:4px}
+  .name-sub{font-size:14px;color:#534AB7;margin-bottom:1rem}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:#D4537E;color:#fff;font-size:11px;font-weight:700;padding:6px 18px;border-radius:999px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.8rem}
+  .main-title{font-size:20px;font-weight:600;color:#1a1640;margin-bottom:.3rem}
+  .subtitle{font-size:13px;color:#534AB7;line-height:1.65;max-width:320px;margin:0 auto}
+
+  .date-section{background:#2a2a2a;padding:1rem 1.5rem;border-top:1px solid #3a3a3a;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+  .date-label{font-size:12px;color:#aaa;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+  .date-input{background:#3a3a3a;border:1px solid #555;color:#fff;border-radius:8px;padding:7px 12px;font-size:13px;outline:none;cursor:pointer;flex:1;min-width:140px;color-scheme:dark}
+  .date-input:focus{border-color:#7F77DD}
+  .date-btn{background:#7F77DD;border:none;color:#fff;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;letter-spacing:.5px}
+  .date-btn:hover{background:#534AB7}
+
+  .countdown-section{background:#2a2a2a;padding:1.5rem;border-top:1px solid #3a3a3a}
+  .cd-label{font-size:11px;font-weight:600;color:#888;letter-spacing:2px;text-transform:uppercase;text-align:center;margin-bottom:1.25rem}
+  .countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .unit-box{border-radius:14px;padding:1.1rem .5rem;text-align:center}
+  .u1{background:#FBEAF0} .u2{background:#FAEEDA} .u3{background:#E1F5EE} .u4{background:#EEEDFE}
+  .unit-number{font-size:34px;font-weight:700;display:block;line-height:1;letter-spacing:-1px}
+  .u1 .unit-number{color:#72243E} .u2 .unit-number{color:#633806} .u3 .unit-number{color:#085041} .u4 .unit-number{color:#3C3489}
+  .unit-label{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-top:7px;font-weight:600}
+  .u1 .unit-label{color:#993556} .u2 .unit-label{color:#854F0B} .u3 .unit-label{color:#0F6E56} .u4 .unit-label{color:#534AB7}
+
+  .progress-section{background:#2a2a2a;padding:1rem 1.5rem 1.5rem;border-top:1px solid #383838}
+  .progress-row{display:flex;justify-content:space-between;margin-bottom:8px;align-items:center}
+  .progress-text{font-size:13px;color:#aaa;display:flex;align-items:center;gap:6px}
+  .p-dot{width:8px;height:8px;border-radius:2px;background:#D4537E;display:inline-block}
+  .progress-track{height:7px;background:#444;border-radius:999px;overflow:hidden}
+  .progress-fill{height:100%;border-radius:999px;background:#D4537E;transition:width .8s ease}
+  .progress-hint{font-size:11px;color:#666;margin-top:6px;text-align:center}
+
+  .quote-section{background:#f5ede0;padding:1.75rem;border-top:1px solid #e0d0b0}
+  .quote-inner{border-left:3.5px solid #EF9F27;padding-left:1.1rem}
+  .quote-text{font-size:14px;font-style:italic;color:#3a2a10;line-height:1.85}
+  .quote-author{font-size:12px;color:#854F0B;margin-top:10px}
+
+  .footer-section{background:#2a2a2a;padding:1.1rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+  .footer-left{display:flex;align-items:center;gap:8px}
+  .footer-dot{width:10px;height:10px;border-radius:50%;background:#1D9E75}
+  .footer-label{font-size:13px;color:#aaa}
+  .footer-date{font-size:14px;font-weight:600;color:#fff}
+</style>
+
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Farewell countdown for Shubhadeep Barman</h2>
+
+<div class="scene">
+  <div class="card">
+
+    <div class="color-strip" aria-hidden="true">
+      <div class="cs cs1"></div><div class="cs cs2"></div><div class="cs cs3"></div><div class="cs cs4"></div><div class="cs cs5"></div>
+    </div>
+
+    <div class="header">
+      <div class="dots" aria-hidden="true">
+        <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div><div class="dot d4"></div><div class="dot d5"></div>
+      </div>
+      <div class="avatar-ring" role="img" aria-label="CSS portrait of Shubhadeep">
+        <div class="av-sky"></div><div class="av-ground"></div><div class="av-grass"></div>
+        <div class="av-ear-l"></div><div class="av-ear-r"></div><div class="av-neck"></div>
+        <div class="av-torso"><div class="av-col-l"></div><div class="av-col-r"></div></div>
+        <div class="av-head"></div><div class="av-hair"></div>
+        <div class="av-eye-l"></div><div class="av-eye-r"></div>
+        <div class="av-nose"></div><div class="av-smile"></div>
+        <div class="av-gl"><div class="av-gl-l"></div><div class="av-gl-b"></div><div class="av-gl-r"></div></div>
+      </div>
+      <p class="name-title">Shubhadeep Barman</p>
+      <p class="name-sub">Our beloved elder bro &amp; mentor</p>
+      <div class="badge"><i class="ti ti-heart" aria-hidden="true" style="font-size:13px"></i> Farewell, Big Bro</div>
+      <h2 class="main-title">You were more than a colleague</h2>
+      <p class="subtitle">A mentor, a big brother, a constant source of strength — we are so proud of you.</p>
+    </div>
+
+    <div class="date-section">
+      <span class="date-label">Last day</span>
+      <input type="date" class="date-input" id="date-picker" value="2026-06-16" />
+      <button class="date-btn" onclick="applyDate()">Set date</button>
+    </div>
+
+    <div class="countdown-section">
+      <p class="cd-label">Counting down to the big day</p>
+      <div class="countdown-grid">
+        <div class="unit-box u1"><span class="unit-number" id="cd-days">--</span><span class="unit-label">days</span></div>
+        <div class="unit-box u2"><span class="unit-number" id="cd-hours">--</span><span class="unit-label">hours</span></div>
+        <div class="unit-box u3"><span class="unit-number" id="cd-mins">--</span><span class="unit-label">mins</span></div>
+        <div class="unit-box u4"><span class="unit-number" id="cd-secs">--</span><span class="unit-label">secs</span></div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-row">
+        <span class="progress-text"><span class="p-dot" aria-hidden="true"></span> Journey to last day</span>
+        <span class="progress-text" id="pct-label">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <p class="progress-hint" id="progress-hint"></p>
+    </div>
+
+    <div class="quote-section">
+      <div class="quote-inner">
+        <p class="quote-text">Shubhadeep, you never just did your job — you lifted everyone around you. You laughed with us on the hard days, believed in us before we believed in ourselves, and left footprints in this team that no one else can fill. Go out there and conquer the world, because you were always built for something bigger. We love you, big bro.</p>
+        <p class="quote-author">— with all our love, your team 💛</p>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <div class="footer-left">
+        <div class="footer-dot" aria-hidden="true"></div>
+        <span class="footer-label">Last working day</span>
+      </div>
+      <span class="footer-date" id="footer-date-display">16 June 2026</span>
+    </div>
+
+    <div class="color-strip" aria-hidden="true">
+      <div class="cs cs5"></div><div class="cs cs4"></div><div class="cs cs3"></div><div class="cs cs2"></div><div class="cs cs1"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const PAGE_LOAD = new Date();
+  let leaveDate = new Date('2026-06-16T23:59:59');
+  let originDate = new Date('2026-01-01T00:00:00');
+  let timer = null;
+
+  function applyDate() {
+    const val = document.getElementById('date-picker').value;
+    if (!val) return;
+
+    const [y, m, d] = val.split('-').map(Number);
+    leaveDate = new Date(y, m - 1, d, 23, 59, 59);
+
+    originDate = new Date(PAGE_LOAD);
+
+    const opts = { day: 'numeric', month: 'long', year: 'numeric' };
+    document.getElementById('footer-date-display').textContent =
+      leaveDate.toLocaleDateString('en-GB', opts);
+
+    if (timer) clearInterval(timer);
+    tick();
+    timer = setInterval(tick, 1000);
+  }
+
+  function pad(n) { return String(Math.floor(Math.max(0, n))).padStart(2, '0'); }
+
+  function tick() {
+    const now = new Date();
+    const diff = leaveDate - now;
+    const totalSpan = leaveDate - originDate;
+    const elapsed = now - originDate;
+
+    if (diff <= 0) {
+      ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id =>
+        document.getElementById(id).textContent = '00');
+      document.getElementById('progress-fill').style.width = '100%';
+      document.getElementById('pct-label').textContent = '100%';
+      document.getElementById('progress-hint').textContent = 'The farewell day has arrived!';
+      clearInterval(timer);
+      return;
+    }
+
+    document.getElementById('cd-days').textContent  = pad(diff / 86400000);
+    document.getElementById('cd-hours').textContent = pad((diff % 86400000) / 3600000);
+    document.getElementById('cd-mins').textContent  = pad((diff % 3600000) / 60000);
+    document.getElementById('cd-secs').textContent  = pad((diff % 60000) / 1000);
+
+    const totalDays = Math.ceil(totalSpan / 86400000);
+    const daysLeft  = Math.ceil(diff / 86400000);
+    const daysDone  = totalDays - daysLeft;
+
+    const rawPct = totalSpan > 0 ? (elapsed / totalSpan) * 100 : 0;
+    const pct = Math.min(100, Math.max(0, Math.round(rawPct)));
+
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('pct-label').textContent = pct + '%';
+    document.getElementById('progress-hint').textContent =
+      daysDone + ' of ' + totalDays + ' days passed · ' + daysLeft + ' days remaining';
+  }
+
+  applyDate();
+</script>
